@@ -11,6 +11,30 @@
 
 ---
 
+## 🚀 Деплой на Linux-сервер (Ollama + Docker)
+
+> Если разворачиваете на Linux VPS — используйте скрипт автоустановки и `DEPLOY.md`.
+
+**Требования:** Ubuntu 22.04/24.04, 16+ GB RAM, 20+ GB диск.
+
+```bash
+# 1. Клонировать репозиторий
+git clone https://github.com/evfff/video_transcription_service_my_vibe_installer_for_jitsi
+cd video_transcription_service_my_vibe_installer_for_jitsi
+
+# 2. Запустить скрипт установки (установит Docker, Ollama, qwen3:8b, настроит UFW)
+sudo bash install.sh
+```
+
+Скрипт автоматически определит IP сервера и создаст `.env`. После завершения сервис доступен по адресу `http://SERVER_IP:3020`.
+
+> 📖 Подробная документация: [DEPLOY.md](DEPLOY.md)
+
+**LLM:** сервис использует **Ollama** (порт 11434) с моделью **qwen3:8b**.  
+Это отличается от оригинального проекта, где используется LM Studio (порт 1234).
+
+---
+
 ## Быстрый старт (Docker)
 
 > **Windows:** используй `mkdir data\inbox` вместо `mkdir -p data/inbox`, и `cd video_transcription_service` для перехода в папку.
