@@ -1,0 +1,67 @@
+# Имя проекта — гарантирует изоляцию от других docker-compose на машине
+name: video-transcription-svc
+
+# IP сервера берётся из файла .env (SERVER_IP=x.x.x.x)
+# Создай .env из .env.example перед запуском: cp .env.example .env
+
+services:
+  # ──────────────────────────────────────────────
+  #  Backend — FastAPI транскрибация (порт 8020)
+  # ──────────────────────────────────────────────
+  vts-api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: videotranscription-api
+    restart: unless-stopped
+    ports:
+      - "8020:8020"
+    volumes:
+      # Папка с видеофайлами — бросай сюда .mp4 / .webm / .mkv
+      - ./data/inbox:/app/data/inbox
+      # Конфиг — редактируй config.yaml и перезапускай сервис
+      - ./config.yaml:/app/config.yaml:ro
+      # Кэш Whisper моделей (чтобы не скачивать при перезапуске)
+      - whisper-cache:/root/.cache/huggingface
+    environment:
+      # Путь к конфигу внутри контейнера
+      - CONFIG_PATH=/app/config.yaml
+      # (опционально) Путь к Obsidian vault если obsidian_export_enabled=true
+      # - OBSIDIAN_VAULT_PATH=/obsidian/vault
+      # (опционально) HuggingFace токен для диаризации (pyannote)
+      # - HF_TOKEN=hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      # Разрешённые CORS-origins: localhost + публичный IP сервера (из .env)
+      - CORS_ORIGINS=http://localhost:3020,http://127.0.0.1:3020,http://${SERVER_IP}:3020
+    extra_hosts:
+      # Позволяет контейнерам обращаться к Ollama на хосте (Linux-совместимо)
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8020/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # ──────────────────────────────────────────────
+  #  Frontend — Next.js UI (порт 3020)
+  # ──────────────────────────────────────────────
+  vts-ui:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+      args:
+        # NEXT_PUBLIC_ переменные встраиваются в JS при сборке образа
+        - NEXT_PUBLIC_API_BASE_URL=http://${SERVER_IP}:8020
+    container_name: videotranscription-ui
+    restart: unless-stopped
+    ports:
+      - "3020:3000"
+    environment:
+      - NEXT_PUBLIC_API_BASE_URL=http://${SERVER_IP}:8020
+    depends_on:
+      vts-api:
+        condition: service_healthy
+
+volumes:
+  whisper-cache:
+    name: vts-whisper-cache

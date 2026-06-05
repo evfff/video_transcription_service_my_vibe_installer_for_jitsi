@@ -1,0 +1,871 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =================================================================
+   FOUC Protection - disable transitions during theme init
+   ================================================================= */
+html.theme-loading *,
+html.theme-loading *::before,
+html.theme-loading *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
+@layer base {
+  /* =================================================================
+     DEFAULT THEME: RetroCyber (применяется всегда, даже без data-theme)
+     ================================================================= */
+  :root {
+    /* RetroCyber Dark tokens as DEFAULT */
+    --background: 220 15% 4%;        /* #0B0D10 - deeper graphite */
+    --foreground: 210 20% 93%;       /* #E6E9EF - brighter text */
+    --card: 220 14% 10%;             /* #141922 - clear step from bg */
+    --card-foreground: 210 20% 93%;
+    --popover: 220 14% 10%;
+    --popover-foreground: 210 20% 93%;
+    --primary: 30 55% 60%;           /* #E3A35A - warm amber accent */
+    --primary-foreground: 220 15% 6%; /* dark text on orange */
+    --secondary: 220 12% 8%;         /* #10151E - subtle variant */
+    --secondary-foreground: 210 20% 93%;
+    --muted: 220 13% 7%;             /* #0F131A - darker for nesting */
+    --muted-foreground: 210 12% 72%; /* #A6AFBD - readable! */
+    --accent: 220 12% 12%;           /* slightly lighter than card */
+    --accent-foreground: 210 20% 93%;
+    --destructive: 8 55% 55%;        /* #C84C3A - muted red */
+    --destructive-foreground: 210 40% 98%;
+    --border: 220 12% 22%;           /* #232B38 - visible borders */
+    --input: 220 12% 20%;
+    --ring: 30 55% 60%;              /* primary color for focus */
+    --radius: 0.75rem;
+  }
+
+  /* =================================================================
+     CLASSIC THEME (explicit override)
+     ================================================================= */
+  html[data-theme="classic"] {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+  }
+
+  /* =================================================================
+     CLASSIC-DARK THEME
+     ================================================================= */
+  html[data-theme="classic-dark"] {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+  }
+
+  /* =================================================================
+     RETROCYBER THEME (explicit, same as :root for safety)
+     ================================================================= */
+  html[data-theme="retrocyber"] {
+    --background: 220 15% 4%;        /* #0B0D10 - deeper graphite */
+    --foreground: 210 20% 93%;       /* #E6E9EF - brighter text */
+    --card: 220 14% 10%;             /* #141922 - clear step from bg */
+    --card-foreground: 210 20% 93%;
+    --popover: 220 14% 10%;
+    --popover-foreground: 210 20% 93%;
+    --primary: 30 55% 60%;           /* #E3A35A - warm amber accent */
+    --primary-foreground: 220 15% 6%; /* dark text on orange */
+    --secondary: 220 12% 8%;         /* #10151E - subtle variant */
+    --secondary-foreground: 210 20% 93%;
+    --muted: 220 13% 7%;             /* #0F131A - darker for nesting */
+    --muted-foreground: 210 12% 72%; /* #A6AFBD - readable! */
+    --accent: 220 12% 12%;           /* slightly lighter than card */
+    --accent-foreground: 210 20% 93%;
+    --destructive: 8 55% 55%;        /* #C84C3A - muted red */
+    --destructive-foreground: 210 40% 98%;
+    --border: 220 12% 22%;           /* #232B38 - visible borders */
+    --input: 220 12% 20%;
+    --ring: 30 55% 60%;              /* primary color for focus */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* =================================================================
+   JarvisVoice Custom Theme Tokens
+   ================================================================= */
+
+/* DEFAULT (RetroCyber) */
+:root {
+  --jv-success: 140 30% 50%;       /* #5BA854 - cleaner green */
+  --jv-success-foreground: 0 0% 100%;
+  --jv-warning: 38 65% 58%;        /* warmer amber */
+  --jv-warning-foreground: 220 15% 6%;
+  --jv-surface-2: 220 12% 9%;      /* between muted and card for table headers */
+  --jv-grad-primary: linear-gradient(135deg, hsl(30 55% 60%) 0%, hsl(30 55% 52%) 100%);
+  --jv-grad-surface: linear-gradient(180deg, hsl(220 14% 10%) 0%, hsl(220 15% 4%) 100%);
+  --jv-shadow-soft: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
+  --jv-shadow-strong: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+  --jv-shadow-glow: 0 0 20px hsl(30 55% 60% / 0.4);
+  --jv-hover-brightness: 1.1;
+  --jv-focus-ring: 0 0 0 2px hsl(var(--ring) / 0.3);
+  --jv-density-scale: 1.0;
+}
+
+/* Classic light theme */
+html[data-theme="classic"] {
+  --jv-success: 142 76% 36%;
+  --jv-surface-2: 210 40% 98%;
+  --jv-grad-primary: linear-gradient(135deg, hsl(221.2 83.2% 53.3%) 0%, hsl(221.2 83.2% 43.3%) 100%);
+  --jv-grad-surface: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 40% 98%) 100%);
+  --jv-shadow-soft: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --jv-shadow-strong: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --jv-shadow-glow: 0 0 20px hsl(221.2 83.2% 53.3% / 0.3);
+  --jv-hover-brightness: 1.05;
+  --jv-focus-ring: 0 0 0 2px hsl(var(--ring) / 0.2);
+}
+
+/* Classic dark theme */
+html[data-theme="classic-dark"] {
+  --jv-success: 142 71% 45%;
+  --jv-surface-2: 217.2 32.6% 15%;
+  --jv-grad-primary: linear-gradient(135deg, hsl(217.2 91.2% 59.8%) 0%, hsl(217.2 91.2% 49.8%) 100%);
+  --jv-grad-surface: linear-gradient(180deg, hsl(222.2 84% 4.9%) 0%, hsl(222.2 84% 3.9%) 100%);
+  --jv-shadow-soft: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+  --jv-shadow-strong: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+  --jv-shadow-glow: 0 0 20px hsl(217.2 91.2% 59.8% / 0.4);
+  --jv-hover-brightness: 1.1;
+  --jv-focus-ring: 0 0 0 2px hsl(var(--ring) / 0.3);
+}
+
+/* RetroCyber theme (same as :root) */
+html[data-theme="retrocyber"] {
+  --jv-success: 140 30% 50%;       /* #5BA854 - cleaner green */
+  --jv-success-foreground: 0 0% 100%;
+  --jv-warning: 38 65% 58%;        /* warmer amber */
+  --jv-warning-foreground: 220 15% 6%;
+  --jv-surface-2: 220 12% 9%;      /* between muted and card for table headers */
+  --jv-grad-primary: linear-gradient(135deg, hsl(30 55% 60%) 0%, hsl(30 55% 52%) 100%);
+  --jv-grad-surface: linear-gradient(180deg, hsl(220 14% 10%) 0%, hsl(220 15% 4%) 100%);
+  --jv-shadow-soft: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
+  --jv-shadow-strong: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+  --jv-shadow-glow: 0 0 20px hsl(30 55% 60% / 0.4);
+  --jv-hover-brightness: 1.1;
+  --jv-focus-ring: 0 0 0 2px hsl(var(--ring) / 0.3);
+}
+
+/* =================================================================
+   RetroCyber Theme V2 - Clean Industrial
+   ================================================================= */
+
+html[data-theme="retrocyber"] {
+  /* Canvas background with VERY subtle vignette + minimal grid */
+  background-image: 
+    radial-gradient(circle at 50% 0%, 
+      rgba(227, 163, 90, 0.04) 0%, 
+      transparent 50%),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 79px,
+      hsl(var(--foreground) / 0.025) 79px,
+      hsl(var(--foreground) / 0.025) 80px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 79px,
+      hsl(var(--foreground) / 0.025) 79px,
+      hsl(var(--foreground) / 0.025) 80px
+    );
+  background-attachment: fixed;
+  background-color: hsl(var(--background));
+}
+
+html[data-theme="retrocyber"] body {
+  font-feature-settings: "ss01", "ss02", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* =================================================================
+   Canonical Panel Style (Cards/Dialogs/Popovers)
+   ================================================================= */
+
+html[data-theme="retrocyber"] .card,
+html[data-theme="retrocyber"] [class*="card"]:not([class*="card-"]),
+html[data-theme="retrocyber"] [role="dialog"],
+html[data-theme="retrocyber"] .popover {
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+  box-shadow: 
+    0 0 0 1px rgba(0, 0, 0, 0.35),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    var(--jv-shadow-soft);
+  border-radius: var(--radius);
+  position: relative;
+}
+
+/* Panel subtle surface gradient overlay */
+html[data-theme="retrocyber"] .card::after,
+html[data-theme="retrocyber"] [class*="card"]:not([class*="card-"])::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--jv-grad-surface);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ensure content is above overlay */
+html[data-theme="retrocyber"] .card > *,
+html[data-theme="retrocyber"] [class*="card"] > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* =================================================================
+   Section Headers (CardHeader elements) - TODO 2
+   ================================================================= */
+
+html[data-theme="retrocyber"] [class*="CardHeader"],
+html[data-theme="retrocyber"] .card-header {
+  border-bottom: none;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+/* Header strip (2px separator) */
+html[data-theme="retrocyber"] [class*="CardHeader"]::after,
+html[data-theme="retrocyber"] .card-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: hsl(var(--primary) / 0.35);
+}
+
+/* Accent line on section headers */
+html[data-theme="retrocyber"] [class*="CardHeader"]::before,
+html[data-theme="retrocyber"] .card-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, 
+    hsl(var(--primary) / 0.35) 0%, 
+    transparent 100%);
+}
+
+/* =================================================================
+   Buttons
+   ================================================================= */
+
+/* Primary Button - clean gradient, subtle hover */
+html[data-theme="retrocyber"] button[class*="primary"],
+html[data-theme="retrocyber"] .btn-primary,
+html[data-theme="retrocyber"] [data-variant="default"] {
+  background: var(--jv-grad-primary);
+  border: 1px solid hsl(var(--primary) / 0.25);
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transition: all 0.15s ease;
+}
+
+html[data-theme="retrocyber"] button[class*="primary"]:hover,
+html[data-theme="retrocyber"] .btn-primary:hover,
+html[data-theme="retrocyber"] [data-variant="default"]:hover {
+  filter: brightness(var(--jv-hover-brightness));
+  transform: translateY(-1px);
+  box-shadow: 
+    0 4px 12px rgba(227, 163, 90, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Secondary/Outline buttons - clean border */
+html[data-theme="retrocyber"] button[class*="secondary"],
+html[data-theme="retrocyber"] button[class*="ghost"],
+html[data-theme="retrocyber"] button[class*="outline"] {
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  transition: all 0.15s ease;
+}
+
+html[data-theme="retrocyber"] button[class*="secondary"]:hover,
+html[data-theme="retrocyber"] button[class*="ghost"]:hover,
+html[data-theme="retrocyber"] button[class*="outline"]:hover {
+  border-color: hsl(var(--primary) / 0.35);
+  background: hsl(var(--accent));
+}
+
+/* =================================================================
+   Input Fields
+   ================================================================= */
+
+html[data-theme="retrocyber"] input[type="text"],
+html[data-theme="retrocyber"] input[type="search"],
+html[data-theme="retrocyber"] input[type="email"],
+html[data-theme="retrocyber"] input[type="password"],
+html[data-theme="retrocyber"] textarea,
+html[data-theme="retrocyber"] select {
+  background: hsl(var(--muted));
+  border: 1px solid hsl(var(--border));
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25);
+  transition: all 0.15s ease;
+}
+
+html[data-theme="retrocyber"] input:focus,
+html[data-theme="retrocyber"] textarea:focus,
+html[data-theme="retrocyber"] select:focus {
+  border-color: hsl(var(--primary) / 0.45);
+  box-shadow: 
+    inset 0 1px 3px rgba(0, 0, 0, 0.25),
+    var(--jv-focus-ring);
+  outline: none;
+}
+
+/* =================================================================
+   Tabs
+   ================================================================= */
+
+html[data-theme="retrocyber"] [role="tablist"] button[data-state="active"] {
+  border-bottom: 2px solid hsl(var(--primary));
+  background: transparent;
+  color: hsl(var(--foreground));
+}
+
+html[data-theme="retrocyber"] [role="tablist"] button {
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s ease;
+  color: hsl(var(--muted-foreground));
+}
+
+html[data-theme="retrocyber"] [role="tablist"] button:hover {
+  border-bottom-color: hsl(var(--primary) / 0.25);
+  color: hsl(var(--foreground));
+}
+
+/* =================================================================
+   Badges - Clean Label Style
+   ================================================================= */
+
+html[data-theme="retrocyber"] .badge,
+html[data-theme="retrocyber"] [class*="badge"] {
+  font-family: var(--jv-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  border: 1px solid currentColor;
+  text-transform: uppercase;
+  background: transparent;
+}
+
+/* =================================================================
+   Tables - Clean Hierarchy
+   ================================================================= */
+
+html[data-theme="retrocyber"] table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+}
+
+html[data-theme="retrocyber"] thead tr {
+  border-bottom: 1px solid hsl(var(--border));
+  background: hsl(var(--surface2, var(--muted)));
+}
+
+html[data-theme="retrocyber"] thead th {
+  font-family: var(--jv-font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+  padding: 0.75rem 1rem;
+}
+
+html[data-theme="retrocyber"] tbody tr {
+  border-bottom: 1px solid hsl(var(--border) / 0.3);
+  transition: all 0.15s ease;
+}
+
+html[data-theme="retrocyber"] tbody tr:nth-child(even) {
+  background: hsl(var(--muted) / 0.3);
+}
+
+html[data-theme="retrocyber"] tbody tr:hover {
+  background: hsl(var(--accent) / 0.5);
+}
+
+/* Selected row - accent outline, NOT fill (TODO 7) */
+html[data-theme="retrocyber"] tbody tr[data-state="selected"],
+html[data-theme="retrocyber"] tbody tr.selected {
+  outline: 1px solid hsl(var(--primary) / 0.4);
+  outline-offset: -1px;
+  background: transparent;
+}
+
+/* Active tab - marker, not fill (TODO 7) */
+html[data-theme="retrocyber"] [role="tablist"] button[data-state="active"] {
+  border-bottom: 2px solid hsl(var(--primary));
+  background: transparent;
+  color: hsl(var(--foreground));
+  outline: 1px solid hsl(var(--primary) / 0.4);
+  outline-offset: -1px;
+}
+
+/* =================================================================
+   JarvisVoice Utility Classes - Clean V2
+   ================================================================= */
+
+/* Panel component - canonical modular panel (TODO 3) */
+.jv-panel {
+  @apply relative rounded-xl border bg-card p-6 shadow-sm;
+  border: 1px solid hsl(var(--border));
+}
+
+html[data-theme="retrocyber"] .jv-panel {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  box-shadow: 
+    0 0 0 1px rgba(0, 0, 0, 0.35),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    var(--jv-shadow-soft);
+  border-radius: var(--radius);
+  position: relative;
+}
+
+/* Surface gradient overlay for panels */
+html[data-theme="retrocyber"] .jv-panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--jv-grad-surface);
+  pointer-events: none;
+  z-index: 0;
+}
+
+html[data-theme="retrocyber"] .jv-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Panel header with micro label */
+.jv-panel-header {
+  @apply flex items-center justify-between pb-3 mb-4 border-b;
+  position: relative;
+  border-bottom-color: hsl(var(--border) / 0.5);
+}
+
+html[data-theme="retrocyber"] .jv-panel-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, 
+    hsl(var(--primary) / 0.35) 0%, 
+    transparent 100%);
+}
+
+/* Label - clean tech badge (TODO 1) */
+.jv-label {
+  @apply inline-flex items-center gap-1.5 rounded-sm px-2 py-1 text-xs font-medium;
+  font-family: var(--jv-font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+  background: transparent;
+}
+
+html[data-theme="retrocyber"] .jv-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  padding: 2px 6px;
+  border-radius: 6px;
+  opacity: 0.6;
+  border: 1px solid hsl(var(--border));
+}
+
+.jv-label-success {
+  @apply jv-label;
+  color: hsl(var(--success, 140 30% 50%));
+  border-color: hsl(var(--success, 140 30% 50%) / 0.3);
+  background: hsl(var(--success, 140 30% 50%) / 0.08);
+}
+
+.jv-label-warning {
+  @apply jv-label;
+  color: hsl(var(--warning, 38 65% 58%));
+  border-color: hsl(var(--warning, 38 65% 58%) / 0.3);
+  background: hsl(var(--warning, 38 65% 58%) / 0.08);
+}
+
+.jv-label-error {
+  @apply jv-label;
+  color: hsl(var(--destructive, 8 55% 55%));
+  border-color: hsl(var(--destructive, 8 55% 55%) / 0.3);
+  background: hsl(var(--destructive, 8 55% 55%) / 0.08);
+}
+
+.jv-label-info {
+  @apply jv-label;
+  color: hsl(var(--primary));
+  border-color: hsl(var(--primary) / 0.3);
+  background: hsl(var(--primary) / 0.08);
+}
+
+/* Status indicators - dots, not badges (TODO 8) */
+.jv-status-dot {
+  @apply inline-block rounded-full;
+  width: 6px;
+  height: 6px;
+}
+
+.jv-status-dot-success {
+  @apply jv-status-dot;
+  background: hsl(142 71% 45%);
+}
+
+.jv-status-dot-warning {
+  @apply jv-status-dot;
+  background: hsl(38 65% 58%);
+}
+
+.jv-status-dot-error {
+  @apply jv-status-dot;
+  background: hsl(8 55% 55%);
+}
+
+html[data-theme="retrocyber"] .jv-status-dot {
+  width: 8px;
+  height: 8px;
+}
+
+html[data-theme="retrocyber"] .jv-status-dot-success {
+  background: hsl(142 60% 40%);
+}
+
+html[data-theme="retrocyber"] .jv-status-dot-warning {
+  background: hsl(38 65% 55%);
+}
+
+html[data-theme="retrocyber"] .jv-status-dot-error {
+  background: hsl(8 50% 48%);
+}
+
+/* Stat display - tabular numbers for metrics (TODO 5) */
+.jv-stat {
+  font-family: var(--jv-font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+html[data-theme="retrocyber"] .jv-stat {
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+/* Keyboard shortcut display */
+.jv-kbd {
+  @apply inline-flex items-center justify-center rounded px-1.5 py-0.5 text-xs font-medium;
+  font-family: var(--jv-font-mono);
+  background: hsl(var(--muted));
+  border: 1px solid hsl(var(--border));
+  box-shadow: 
+    0 1px 0 hsl(var(--border)),
+    inset 0 1px 0 hsl(var(--foreground) / 0.1);
+  min-width: 1.5rem;
+  text-align: center;
+}
+
+html[data-theme="retrocyber"] .jv-kbd {
+  border-radius: 0.25rem;
+  background: hsl(var(--card));
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 hsl(var(--foreground) / 0.08);
+}
+
+/* Chip - compact status indicator */
+.jv-chip {
+  @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium;
+  background: hsl(var(--secondary));
+  border: 1px solid hsl(var(--border));
+}
+
+.jv-chip-dot {
+  @apply w-1.5 h-1.5 rounded-full;
+}
+
+html[data-theme="retrocyber"] .jv-chip {
+  border-radius: 0.375rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  letter-spacing: 0.015em;
+}
+
+/* Divider with tech style (TODO 4) */
+.jv-divider {
+  @apply relative my-6;
+  height: 1px;
+  background: hsl(var(--border));
+}
+
+html[data-theme="retrocyber"] .jv-divider {
+  border-bottom: 1px dashed hsl(var(--foreground) / 0.08);
+  background: transparent;
+  opacity: 0.35;
+}
+
+/* =================================================================
+   Typography - RetroCyber Display & Mono (TODO 6)
+   ================================================================= */
+
+html[data-theme="retrocyber"] h1,
+html[data-theme="retrocyber"] h2,
+html[data-theme="retrocyber"] h3 {
+  font-family: var(--jv-font-display, var(--font-sans));
+  letter-spacing: -0.02em;
+  font-weight: 600;
+}
+
+html[data-theme="retrocyber"] .card-title,
+html[data-theme="retrocyber"] [class*="CardTitle"] {
+  font-family: var(--jv-font-display, var(--font-sans));
+  letter-spacing: -0.015em;
+  font-weight: 600;
+}
+
+/* Ensure mono font vars exist */
+:root {
+  --jv-font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+  --jv-font-display: 'Space Grotesk', var(--font-sans);
+}
+
+/* =================================================================
+   Dialog/Modal Fixes
+   ================================================================= */
+
+html[data-theme="retrocyber"] [role="dialog"] {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 50;
+  max-height: 90vh;
+  width: 90vw;
+}
+
+html[data-theme="retrocyber"] [data-radix-popper-content-wrapper] {
+  z-index: 50;
+}
+
+/* =================================================================
+   Switch/Toggle - Primary Color
+   ================================================================= */
+
+html[data-theme="retrocyber"] button[role="switch"][data-state="checked"] {
+  background: hsl(var(--primary));
+  border-color: hsl(var(--primary));
+}
+
+html[data-theme="retrocyber"] button[role="switch"][data-state="unchecked"] {
+  background: hsl(var(--input));
+  border-color: hsl(var(--border));
+}
+
+html[data-theme="retrocyber"] button[role="switch"]:focus-visible {
+  outline: none;
+  ring: 2px solid hsl(var(--primary) / 0.35);
+  ring-offset: 2px;
+}
+
+/* ================================================
+   SCROLLBARS — UNIVERSAL THEME STYLES
+   ================================================ */
+
+/* Webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.6);
+  border-radius: 8px;
+  border: 2px solid hsl(var(--muted));
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.8);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: hsl(var(--primary));
+}
+
+/* Corner where horizontal and vertical scrollbars meet */
+::-webkit-scrollbar-corner {
+  background: hsl(var(--muted));
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--primary) / 0.6) hsl(var(--muted));
+}
+
+/* RetroCyber theme — premium scrollbars */
+html[data-theme="retrocyber"] ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html[data-theme="retrocyber"] ::-webkit-scrollbar-track {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0;
+}
+
+html[data-theme="retrocyber"] ::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.5);
+  border: 2px solid hsl(var(--card));
+  border-radius: 0;
+  box-shadow: inset 0 0 0 1px hsl(var(--primary) / 0.2);
+}
+
+html[data-theme="retrocyber"] ::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.7);
+  box-shadow: inset 0 0 0 1px hsl(var(--primary) / 0.3);
+}
+
+html[data-theme="retrocyber"] ::-webkit-scrollbar-thumb:active {
+  background: hsl(var(--primary) / 0.9);
+}
+
+html[data-theme="retrocyber"] ::-webkit-scrollbar-corner {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+}
+
+html[data-theme="retrocyber"] * {
+  scrollbar-color: hsl(var(--primary) / 0.5) hsl(var(--card));
+}
+
+/* =================================================================
+   Canvas Breathing Animation (TODO 10)
+   ================================================================= */
+
+@keyframes canvas-breathing {
+  0%, 100% {
+    background-size: 100% 100%;
+    opacity: 1;
+  }
+  50% {
+    background-size: 102% 102%;
+    opacity: 0.98;
+  }
+}
+
+html[data-theme="retrocyber"] {
+  animation: canvas-breathing 25s ease-in-out infinite;
+}
+
+/* Status Dot Breathing (TODO 10) */
+@keyframes status-breathing {
+  0%, 100% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.0);
+    opacity: 1;
+  }
+}
+
+html[data-theme="retrocyber"] .jv-status-dot[data-state="running"],
+html[data-theme="retrocyber"] .jv-status-dot-success[data-state="running"] {
+  animation: status-breathing 3.5s ease-in-out infinite;
+}
+
+/* =================================================================
+   Hover Micro-Motion (TODO 11)
+   ================================================================= */
+
+html[data-theme="retrocyber"] button[class*="primary"]:hover,
+html[data-theme="retrocyber"] .btn-primary:hover,
+html[data-theme="retrocyber"] [data-variant="default"]:hover {
+  filter: brightness(var(--jv-hover-brightness));
+  transform: translateY(-1px);
+  box-shadow: 
+    0 4px 12px rgba(227, 163, 90, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: all 140ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+html[data-theme="retrocyber"] .card:hover,
+html[data-theme="retrocyber"] .jv-panel:hover {
+  box-shadow: 
+    0 0 0 1px rgba(0, 0, 0, 0.4),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 4px 8px rgba(0, 0, 0, 0.15);
+  transition: box-shadow 150ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+html[data-theme="retrocyber"] tbody tr:hover {
+  background: hsl(var(--accent) / 0.5);
+  transition: background 120ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}

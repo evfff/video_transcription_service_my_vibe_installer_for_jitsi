@@ -1,0 +1,134 @@
+# ═══════════════════════════════════════════════════════════════════
+#  Video Transcription Service — Конфигурация
+# ═══════════════════════════════════════════════════════════════════
+#
+#  Этот файл монтируется в Docker как volume:
+#    ./config.yaml:/app/config.yaml:ro
+#
+#  Минимальная конфигурация: достаточно поменять inbox_path.
+#  Все остальные настройки имеют разумные умолчания.
+# ═══════════════════════════════════════════════════════════════════
+
+meetings:
+
+  # ─── Хранилище ────────────────────────────────────────────────────────────
+  # Папка, куда бросать видеофайлы (.mp4, .webm, .mkv, .avi, .mov).
+  # В Docker: используй volume ./data/inbox:/app/data/inbox
+  inbox_path: /app/data/inbox
+
+  # Поддерживаемые форматы видео/аудио
+  supported_extensions:
+    - .mp4
+    - .webm
+    - .mkv
+    - .avi
+    - .mov
+    - .m4v
+    - .wmv
+    - .flv
+    - .mp3
+    - .wav
+    - .m4a
+    - .ogg
+
+  # Максимальный размер файла для обработки (МБ)
+  max_file_size_mb: 2000
+
+
+  # ─── Транскрибация (faster-whisper) ──────────────────────────────────────
+  # Размер модели:
+  #   tiny    — самая быстрая, хуже качество (~75 МБ)
+  #   base    — быстрая, базовое качество (~145 МБ)
+  #   small   — хорошая скорость, хорошее качество (~465 МБ)
+  #   medium  — рекомендуется для русского языка (~1.5 ГБ)
+  #   large-v2 — наилучшее качество (~3 ГБ, медленнее)
+  whisper_model: medium
+
+  # Устройство вычислений:
+  #   cpu   — без GPU (медленнее, работает везде)
+  #   cuda  — NVIDIA GPU (требует CUDA + nvidia-docker)
+  device: cpu
+
+  # Тип квантизации (влияет на скорость и память):
+  #   int8    — быстрее, меньше RAM, CPU рекомендуется
+  #   float16 — для GPU (CUDA)
+  #   float32 — максимальная точность, больше RAM
+  compute_type: int8
+
+  # Язык транскрибации:
+  #   ru   — русский (быстрее чем auto)
+  #   en   — английский
+  #   auto — автоопределение (медленнее, менее надёжно)
+  language: ru
+
+  # Интервал сканирования папки inbox (секунды)
+  polling_interval_sec: 30
+
+  # Путь к ffmpeg (обычно просто "ffmpeg" если он в PATH)
+  ffmpeg_path: ffmpeg
+
+
+  # ─── Диаризация спикеров (опционально) ───────────────────────────────────
+  # Определяет "кто говорит" — помечает сегменты SPEAKER_00, SPEAKER_01, ...
+  # Требует:
+  #   1. pip install pyannote.audio
+  #   2. Принять лицензию на HuggingFace: https://hf.co/pyannote/speaker-diarization-3.1
+  #   3. Создать HF токен и добавить в env: HF_TOKEN=hf_xxxx
+  diarization_enabled: false
+
+
+  # ─── Анализ с LLM (опционально) ──────────────────────────────────────────
+  # Генерирует: краткое изложение, задачи, ключевые тезисы, решения.
+  # Использует OpenAI-совместимый API (LM Studio, Ollama, OpenAI, etc.)
+  #
+  # LM Studio (локально):
+  #   1. Запустить LM Studio → Local Server → Start
+  #   2. Загрузить любую модель (рекомендуется: Qwen3-8B, Mistral-7B, gemma-2-9b)
+  #   3. llm_url: http://host.docker.internal:1234/v1/chat/completions  (Docker)
+  #              или http://127.0.0.1:1234/v1/chat/completions           (локально)
+  #
+  # OpenAI:
+  #   llm_url: https://api.openai.com/v1/chat/completions
+  #   Задай в env: OPENAI_API_KEY=sk-xxx (если нужен ключ — добавь в pipeline.py)
+  #
+  # Если LLM недоступен — сервис продолжает работу без анализа (транскрипт сохраняется).
+  llm_url: http://host.docker.internal:11434/v1/chat/completions
+
+  # Название модели (передаётся в API запрос).
+  # Оставь пустым — LM Studio сам выберет загруженную модель.
+  llm_model: "qwen3:8b"
+
+  # Максимум токенов в ответе (суммаризация + задачи)
+  llm_max_tokens: 2000
+
+  # Температура (0.0 = детерминированный, 1.0 = творческий)
+  llm_temperature: 0.2
+
+  # Если задан — попытаться загрузить именно эту модель перед анализом
+  # Требует LM Studio >= 0.3.5 с поддержкой Model Management API
+  # Оставь пустым для отключения автозагрузки.
+  llm_analysis_model: ""
+
+
+  # ─── Экспорт в Obsidian (опционально) ────────────────────────────────────
+  # Создаёт папку встречи прямо в Obsidian vault с 4 файлами:
+  #   резюме.md, транскрипт.md, задачи.md, заметки.md
+  #
+  # Требует:
+  #   1. Установить переменную окружения OBSIDIAN_VAULT_PATH=<путь к vault>
+  #   2. В Docker — смонтировать vault как volume:
+  #        - /path/to/your/vault:/obsidian/vault
+  #      И задать env: OBSIDIAN_VAULT_PATH=/obsidian/vault
+  obsidian_export_enabled: false
+
+  # Имя папки внутри vault для встреч
+  obsidian_meetings_dir: Встречи
+
+
+  # ─── Webhook (опционально) ────────────────────────────────────────────────
+  # HTTP POST на указанный URL при завершении/ошибке обработки.
+  # Тело запроса: {"meeting_id": "...", "status": "completed", "folder": "..."}
+  webhook_url: ""
+  webhook_on_status:
+    - completed
+    - failed
