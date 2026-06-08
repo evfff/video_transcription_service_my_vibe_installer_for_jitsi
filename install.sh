@@ -60,7 +60,7 @@ sleep 3
 log "Ollama перезапущена"
 
 # ── 6. Загрузить модель ───────────────────────────────────────────
-OLLAMA_MODEL="qwen3:1.7b"
+OLLAMA_MODEL="qwen3:8b"
 log "Загрузка модели $OLLAMA_MODEL (может занять несколько минут)..."
 ollama pull "$OLLAMA_MODEL"
 log "Модель загружена"
